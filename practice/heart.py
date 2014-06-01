@@ -8,8 +8,10 @@
 # Copyright:   (c) Alic Jiang 2014
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
+# add lines into a list and then draws them to see if it helps with the speed
 from math import *
 from graphics import *
+from random import *
 
 def heartEq(t):
     x = 16*sin(t)**3
@@ -36,50 +38,79 @@ def main():
     win = GraphWin("Heart", 600, 600)
     w = 20
     win.setCoords(-w,-w,w,w)
+
     listOfPoints = []
-
-    # draws the points on the heart
-    for i in drange(-pi,pi,0.1):
-        point = heartEq(i)
-        #print(point.getX(),point.getY())
-        listOfPoints.append(point)
-        point.draw(win)
-
-    numOfPoints = len(listOfPoints)
+    numOfPoints = 0
     numOfLines = 0
     totalLength = 0
     perimeter = 0
-    step = 5
+    pointStep = 0.1
+    lineStep = 2
+    preference = "" #random or ordered
+    choice = " "
+    outline = False
 
-    # draws the outline
-    for i in range(numOfPoints-1):
-        line = Line(listOfPoints[i], listOfPoints[i+1])
-        perimeter +=  getLength(line)
-        line.setFill("red")
-        line.draw(win)
-    print(perimeter)
+    choice = input("Which one do you prefer, (a)randomness or (b)order?")
 
-    # connects the dots on the left half
-    for i in range(numOfPoints//2):
-        for j in range(1,numOfPoints//2,step):
-            line = Line(listOfPoints[j], listOfPoints[i])
+    print("choice: ", choice)
+
+    if choice == "a" or choice == "A" or choice == "random" or choice == "1" or choice == "randomness":
+        preference = "random"
+    else:
+        preference = "order"
+
+    print("preference: ", preference)
+
+    # draws the points on the heart
+    for i in drange(-pi, pi, pointStep):
+        point = heartEq(i)
+        #print(point.getX(),point.getY())
+        listOfPoints.append(point)
+        point.setFill("red")
+        #point.draw(win)
+
+    numOfPoints = len(listOfPoints)
+
+    if outline:
+        # draws the outline
+        for i in range(numOfPoints-1):
+            line = Line(listOfPoints[i], listOfPoints[i+1])
+            perimeter +=  getLength(line)
+            line.setFill("red")
+            line.draw(win)
+
+
+    if preference =="order":
+        # connects the dots on the left half
+        for i in range(numOfPoints//2):
+            for j in range(1,numOfPoints//2,lineStep):
+                line = Line(listOfPoints[j], listOfPoints[i])
+                totalLength +=  getLength(line)
+                line.setFill("red")
+                line.draw(win)
+                numOfLines += 1
+
+        # connects the dots on the right half
+        for i in reversed(range(numOfPoints//2, numOfPoints,1)):
+            for j in reversed(range(numOfPoints//2+1, numOfPoints,lineStep)):
+                line = Line(listOfPoints[j], listOfPoints[i])
+                totalLength +=  getLength(line)
+                line.setFill("red")
+                line.draw(win)
+                numOfLines += 1
+
+    elif preference == "random":
+        # connects the dots randomly
+        for i in range(800):
+            pt1 = randint(0, numOfPoints-1)
+            pt2 = randint(0, numOfPoints-1)
+            while abs(pt2-pt1) > 6:
+                pt2 = randint(0, numOfPoints-1)
+            line = Line(listOfPoints[pt1], listOfPoints[pt2])
             totalLength +=  getLength(line)
             line.setFill("red")
             line.draw(win)
             numOfLines += 1
-
-    # connects the dots on the right half
-    for i in reversed(range(numOfPoints//2, numOfPoints,1)):
-        for j in reversed(range(numOfPoints//2+1, numOfPoints,step)):
-            line = Line(listOfPoints[j], listOfPoints[i])
-            totalLength +=  getLength(line)
-            line.setFill("red")
-            line.draw(win)
-            numOfLines += 1
-
-
-    print(totalLength)
-    print(numOfLines)
 
     win.getMouse()
     win.close()
