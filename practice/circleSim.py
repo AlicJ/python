@@ -79,7 +79,7 @@ def main():
             polygon.write("Percision: " + str(shape+2), font=('Courier', 10, 'normal'))
             moveDown(polygon,16)
             polygon.write(str(polygonData[shape][0]) + " sided polygon", font=('Courier', 10, 'normal'))
-            goUp(polygon,36)
+            moveUp(polygon,36)
 
             polygon.penup()
             polygon.forward(160)

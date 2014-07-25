@@ -9,10 +9,10 @@
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 # add lines into a list and then draws them to see if it helps with the speed
-from math import cos, sin, pi
+from math import *
 from graphics import *
-from random import randint
-from time import sleep
+from random import *
+from time import *
 
 def heartEq(t):
     x = 16*sin(t)**3
